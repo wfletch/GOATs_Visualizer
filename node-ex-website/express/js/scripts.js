@@ -1,3 +1,10 @@
 function stuff(){
-    alert("This File has been loaded!!");
+    axios({
+        method: 'get',
+        url: 'http://localhost:3000/get_snapshot',
+        responseType: 'stream'
+      })
+        .then(function (response) {
+          alert(response)
+        });
 }
