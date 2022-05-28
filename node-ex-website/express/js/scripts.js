@@ -10,14 +10,27 @@ function stuff() {
     })
         .then(function (response) {
             console.log(response)
-            data = response["data"]
-            var nodes = new vis.DataSet(
-                data["nodes"]
-            );
+            let response_data = response["data"]
+            let nodes = response_data["nodes"]
+            let edges = response_data["edges"]
+            
+            edges.forEach(element => {
+                element["arrows"] = {to: {enabled: true}};
+                element["label"] = element["id"];
+                element["title"] = element["queue"].toString()
+            });
 
-            // create an array with edges
-            var edges = new vis.DataSet(
-                data["edges"]
+            nodes.forEach(element => {
+                element["label"] = element["id"]
+                element["size"] = 0.0000000001
+                element["x"] *= 1.5
+                element["y"] *= 1.5
+            });
+            let vis_nodes = new vis.DataSet(
+                nodes
+            );
+            var vis_edges = new vis.DataSet(
+                edges
             );
 
             // create a network
@@ -25,12 +38,12 @@ function stuff() {
 
             // provide the data in the vis format
             var data = {
-                nodes: nodes,
-                edges: edges
+                nodes: vis_nodes,
+                edges: vis_edges
             };
             var options = {
                 nodes: {
-                    shape: 'dot'
+                    shape: 'square'
                 },
                 edges: {
                     smooth: false
@@ -38,7 +51,7 @@ function stuff() {
                 physics: false,
                 interaction: {
                     dragNodes: false,// do not allow dragging nodes
-                    zoomView: false, // do not allow zooming
+                    zoomView: true, // do not allow zooming
                     dragView: false  // do not allow dragging
                 }
             };// initialize your network!
